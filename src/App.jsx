@@ -89,7 +89,7 @@ function App() {
         {isTyping && (
           <div className="flex justify-start">
             <div className="bg-gradient-to-r from-gray-400 to-gray-500 text-white rounded-3xl px-6 py-3 max-w-[70%] shadow-md animate-pulse transform transition-all">
-              <img src="https://via.placeholder.com/35" alt="Akshara Raj" className="w-9 h-9 rounded-full inline-block mr-2" />
+              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRYK2AWHw_QpMWVU2kWoGgAzz1kUyIQFs_rw&s" alt="Akshara Raj" className="w-9 h-9 rounded-full inline-block mr-2" />
               Akshara Raj is typing...
             </div>
           </div>

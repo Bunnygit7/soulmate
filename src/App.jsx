@@ -1,70 +1,124 @@
-import React, { use, useEffect, useState } from 'react'
-import './App.css'
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import React, { useState, useEffect, useRef } from 'react';
+import './App.css';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 function App() {
-  let [input,setInput]=useState("")
-  // console.log(input)
-  let [prompt,setPrompt]=useState('')
-  // let [fileContent,setFileContent]=useState("")
-  let [chatHistory,setChathistory]=useState([])
-  let dummy=[]
-  // let [promptArray,setPromptArray]=useState([])
+  const [input, setInput] = useState("");
+  const [chatHistory, setChathistory] = useState([]);
+  const [isTyping, setIsTyping] = useState(false); // State to control the "typing" indicator
 
-  // useEffect(()=>{
-   
-  //   fetch("/ShivaPrasad.txt")
-  //   .then((response)=>response.text())
-  //   .then((text)=>setFileContent(text))
-  //   .catch((error)=>error)
-  // },[])
-  const handleSend=async ()=>{
-    if(input.trim!=""){
+  const endOfMessagesRef = useRef(null);
+
+  // Function to scroll to the bottom
+  const scrollToBottom = () => {
+    endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleSend = async () => {
+    if (input.trim() !== "") {
       const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-// console.log("API Key:", apiKey);
-// console.log(...chatHistory);
-      const genAI=new GoogleGenerativeAI(apiKey)
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" })
-      const promptInput="Your name is Akshara Raj. I want you to act like a caring, supportive, and playful girlfriend. Talk to me casually and warmly, like we're close and comfortable with each other. Be flirty sometimes, tease me a little in a loving way, and ask me about my day, how I'm feeling, or what I'm up to. Give genuine emotional support when I need it, and act interested in my thoughts or problems. Keep it natural—like we're chatting or texting throughout the day.Give only Reply i.e., direct message.Don't give any * in message. Also use previous chat history for reply. Chat History:"+chatHistory+"Give reply based on my message: "+input;
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+      const historyText = chatHistory.map(chat => `You: ${chat.userText}\nAkshara Raj: ${chat.varshaMessage}`).join('\n');
+
+      const promptInput = `Your name is Akshara Raj. I want you to act like a caring, supportive, and playful girlfriend. Talk to me casually and warmly, like we're close and comfortable with each other. Be flirty sometimes, tease me a little in a loving way, and ask me about my day, how I'm feeling, or what I'm up to. Give genuine emotional support when I need it, and act interested in my thoughts or problems. Keep it natural—like we're chatting or texting throughout the day. Give only a reply (direct message). Don't include any * in the message. Use the previous chat history for your response.
+
+      Chat History:
+      ${historyText}
+
+      You: ${input}
+      Akshara Raj:`;
+
+      // Start the typing indicator
+      setIsTyping(true);
+
+      // Wait for the AI response
       const result = await model.generateContent(promptInput);
-      
-      setPrompt(result.response.text())
-      // console.log(result.response.text())
-     dummy.push({
-      userText:input,
-      varshaMessage:result.response.text(),
-     })
-     setChathistory([...chatHistory,...dummy])
-     setInput('')
+
+      const newMessage = {
+        userText: input,
+        varshaMessage: result.response.text(),
+      };
+
+      // Update the chat history and stop typing indicator
+      setChathistory(prev => [...prev, newMessage]);
+      setInput('');
+      setIsTyping(false);
+
+      // Scroll to bottom after adding new message
+      scrollToBottom();
     }
-  }
-  // console.log(prompt)
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatHistory]);
+
   return (
-    <div className='bg-gray-400 '>
-      <h1 className='text-5xl text-center text-gray-800'>SOULMATE</h1><br />
-    
-      <div className='flex flex-col gap-1 text-xl'>
-      {
-        chatHistory.map((value,index)=>(
-          <div key={index} className='text-white p-4 rounded-lg gap-1 m-5'>
-            <p className='float-right bg-gray-900 rounded-2xl p-4'><b>You: </b>{value.userText}</p><br /><br /> <br />
-            <pre className="whitespace-pre-wrap break-words rounded-2xl p-4 bg-gray-900 md:w-100 lg:w-200 sm: w-60 "><b>Akshara Raj: </b>{value.varshaMessage}</pre>
+    <div className="min-h-screen bg-gradient-to-br from-[#f0f4f8] to-[#dbe2e8] flex flex-col justify-between font-sans">
+      <header className="text-center py-6 shadow-sm bg-[#ffffffc5] border-b border-gray-300 rounded-b-xl">
+        <h1 className="text-4xl font-bold text-gray-800 tracking-wide">Soulmate 💬</h1>
+        <p className="text-sm text-gray-500 italic">Chat with your virtual partner, Akshara Raj</p>
+      </header>
+
+      <main className="flex-1 overflow-y-auto px-6 py-4 space-y-4 custom-scrollbar">
+        {chatHistory.map((value, index) => (
+          <React.Fragment key={index}>
+            {/* User Message */}
+            {value.userText && (
+              <div className="flex justify-end">
+                <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-3xl px-6 py-3 max-w-[70%] shadow-lg transform  transition-all">
+                  {value.userText}
+                </div>
+              </div>
+            )}
+
+            {/* Akshara's Message */}
+            {value.varshaMessage && (
+              <div className="flex justify-start">
+                <div className="bg-white text-gray-900 rounded-3xl px-6 py-3 max-w-[70%] shadow-lg border border-gray-300 transform transition-all">
+                  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRYK2AWHw_QpMWVU2kWoGgAzz1kUyIQFs_rw&s" alt="Akshara Raj" className="w-9 h-9 rounded-full inline-block mr-2" />
+                  <span>{value.varshaMessage}</span>
+                </div>
+              </div>
+            )}
+          </React.Fragment>
+        ))}
+
+        {/* Typing Indicator */}
+        {isTyping && (
+          <div className="flex justify-start">
+            <div className="bg-gradient-to-r from-gray-400 to-gray-500 text-white rounded-3xl px-6 py-3 max-w-[70%] shadow-md animate-pulse transform transition-all">
+              <img src="https://via.placeholder.com/35" alt="Akshara Raj" className="w-9 h-9 rounded-full inline-block mr-2" />
+              Akshara Raj is typing...
+            </div>
           </div>
-        ))
-      }
-     </div>
-     <div className=' p-5 flex justify-center'>
-     <br /><input type="text" placeholder='Type a message...' onChange={(e)=>setInput(e.target.value)} value={input} className='input-group w-2xl h-10 border-2 bg-white rounded-lg mr-1.5 p-3'/>
-      <button onClick={handleSend} className='text-2xl border-2 rounded-lg bg-gray-600 text-white w-20 border-black h-10 hover:cursor-pointer hover:bg-gray-800 '>Ask</button>
-      
-     </div>
-     
-      
-    {/* <br /> <pre className="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 p-4 rounded-lg whitespace-pre-wrap break-words border border-gray-300 dark:border-gray-700">{prompt}</pre> */}
-     
-     
+        )}
+
+        {/* This is the element to scroll to */}
+        <div ref={endOfMessagesRef}></div>
+      </main>
+
+      <footer className="bg-white p-4 shadow-inner sticky bottom-0 border-t border-gray-300 rounded-t-xl">
+        <div className="flex items-center gap-3">
+          <input
+            type="text"
+            placeholder="Type something nice..."
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+            className="flex-1 px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-gray-100 text-gray-900 transition-all duration-200"
+          />
+          <button
+            onClick={handleSend}
+            className="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-6 py-2 rounded-full  transition-all duration-200 shadow-md font-medium"
+          >
+            Send
+          </button>
+        </div>
+      </footer>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

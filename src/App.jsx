@@ -48,7 +48,7 @@ function App() {
         chatHistory.map((value,index)=>(
           <div key={index} className='text-white p-4 rounded-lg gap-1 m-5'>
             <p className='float-right bg-gray-900 rounded-2xl p-4'><b>You: </b>{value.userText}</p><br /><br /> <br />
-            <pre className="whitespace-pre-wrap break-words rounded-2xl p-4 bg-gray-900 md:w-100 lg:w-200 sm: w-50 "><b>Varsha: </b>{value.varshaMessage}</pre>
+            <pre className="whitespace-pre-wrap break-words rounded-2xl p-4 bg-gray-900 md:w-100 lg:w-200 sm: w-60 "><b>Varsha: </b>{value.varshaMessage}</pre>
           </div>
         ))
       }

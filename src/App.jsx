@@ -25,7 +25,7 @@ function App() {
 // console.log(...chatHistory);
       const genAI=new GoogleGenerativeAI(apiKey)
       const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" })
-      const promptInput="Your name is Varsha. I want you to act like a caring, supportive, and playful girlfriend. Talk to me casually and warmly, like we're close and comfortable with each other. Be flirty sometimes, tease me a little in a loving way, and ask me about my day, how I'm feeling, or what I'm up to. Give genuine emotional support when I need it, and act interested in my thoughts or problems. Keep it natural—like we're chatting or texting throughout the day.Give only Reply i.e., direct message.Don't give any * in message. Also use previous chat history for reply. Chat History:"+chatHistory+"Give reply based on my message: "+input;
+      const promptInput="Your name is Akshara Raj. I want you to act like a caring, supportive, and playful girlfriend. Talk to me casually and warmly, like we're close and comfortable with each other. Be flirty sometimes, tease me a little in a loving way, and ask me about my day, how I'm feeling, or what I'm up to. Give genuine emotional support when I need it, and act interested in my thoughts or problems. Keep it natural—like we're chatting or texting throughout the day.Give only Reply i.e., direct message.Don't give any * in message. Also use previous chat history for reply. Chat History:"+chatHistory+"Give reply based on my message: "+input;
       const result = await model.generateContent(promptInput);
       
       setPrompt(result.response.text())
@@ -48,7 +48,7 @@ function App() {
         chatHistory.map((value,index)=>(
           <div key={index} className='text-white p-4 rounded-lg gap-1 m-5'>
             <p className='float-right bg-gray-900 rounded-2xl p-4'><b>You: </b>{value.userText}</p><br /><br /> <br />
-            <pre className="whitespace-pre-wrap break-words rounded-2xl p-4 bg-gray-900 md:w-100 lg:w-200 sm: w-60 "><b>Varsha: </b>{value.varshaMessage}</pre>
+            <pre className="whitespace-pre-wrap break-words rounded-2xl p-4 bg-gray-900 md:w-100 lg:w-200 sm: w-60 "><b>Akshara Raj: </b>{value.varshaMessage}</pre>
           </div>
         ))
       }

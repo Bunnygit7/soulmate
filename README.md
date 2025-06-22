@@ -8,9 +8,7 @@
 
 - ⚛️ React
 - ⚡ Vite
-- 🧹 ESLint (Airbnb style)
 - 💅 CSS (Vanilla or integrate Tailwind/SCSS as needed)
-- 🧱 React Router (setup pending)
 
 ---
 

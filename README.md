@@ -25,7 +25,7 @@
 # 1. Clone the repository
 git clone https://github.com/Bunnygit7/soulmate.git
 cd soulmate
-
+```
 # 2. Install dependencies
 npm install
 
